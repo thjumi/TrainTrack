@@ -1,17 +1,24 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Contracts\RutinaServiceInterface;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Rutina;
 use Illuminate\Http\Request;
 
 class RutinaController extends Controller
 {
+    protected $rutinaService;
+
+    public function __construct(RutinaServiceInterface $rutinaService)
+    {
+        $this->rutinaService = $rutinaService;
+    }
+
     public function index()
     {
         $user = Auth::user();
-        $rutinas = Rutina::where('usuario_id', $user->id)->get(); // Obtener solo las rutinas del usuario autenticado
+        $rutinas = $this->rutinaService->getAllRutinas($user);
+
         return view('rutinas.index', compact('rutinas'));
     }
 
@@ -25,39 +32,22 @@ class RutinaController extends Controller
             'descripcion' => 'required|string|max:200',
         ]);
 
-        // Crear la rutina asociada al usuario autenticado
-        Rutina::create([
-            'usuario_id' => $user->id,
-            'nombre' => $request->nombre,
-            'fechaCreacion' => $request->fechaCreacion,
-            'descripcion' => $request->descripcion,
-        ]);
+        $this->rutinaService->createRutina($request->all(), $user);
 
-        return redirect()->route('rutinas.index')->with('success', 'Rutina creada exitosamente');
+        return redirect()->route('rutinas.index')->with('success', 'Rutina creada exitosamente.');
     }
 
     public function show($id)
     {
         $user = Auth::user();
-        $rutina = Rutina::findOrFail($id);
+        $rutina = $this->rutinaService->getRutinaById($id, $user);
 
-        // Verificar que solo pueda ver sus propias rutinas
-        if ($rutina->usuario_id !== $user->id) {
-            abort(403, 'No tienes permiso para ver esta rutina.');
-        }
-
-        return view('rutinas.show', compact('rutina')); // Mostrar la rutina individual
+        return view('rutinas.show', compact('rutina'));
     }
 
     public function update(Request $request, $id)
     {
         $user = Auth::user();
-        $rutina = Rutina::findOrFail($id);
-
-        // Verificar que solo pueda actualizar sus propias rutinas
-        if ($rutina->usuario_id !== $user->id) {
-            abort(403, 'No tienes permiso para actualizar esta rutina.');
-        }
 
         $request->validate([
             'nombre' => 'required|string|max:40',
@@ -65,24 +55,16 @@ class RutinaController extends Controller
             'descripcion' => 'required|string|max:200',
         ]);
 
-        $rutina->update($request->only(['nombre', 'fechaCreacion', 'descripcion']));
+        $this->rutinaService->updateRutina($id, $request->all(), $user);
 
-        return redirect()->route('rutinas.index')->with('success', 'Rutina actualizada exitosamente');
+        return redirect()->route('rutinas.index')->with('success', 'Rutina actualizada exitosamente.');
     }
 
     public function destroy($id)
     {
         $user = Auth::user();
-        $rutina = Rutina::findOrFail($id);
+        $this->rutinaService->deleteRutina($id, $user);
 
-        // Verificar que solo pueda eliminar sus propias rutinas
-        if ($rutina->usuario_id !== $user->id) {
-            return response()->json(['error' => 'No tienes permiso para eliminar esta rutina'], 403);
-        }
-
-        $rutina->delete();
-
-        return redirect()->route('rutinas.index')->with('success', 'Rutina eliminada exitosamente');
+        return redirect()->route('rutinas.index')->with('success', 'Rutina eliminada exitosamente.');
     }
-    
 }

@@ -13,9 +13,10 @@ class RoleMiddleware
             abort(403, 'No tienes permisos para acceder a esta página.');
         }
 
-        if (!in_array(auth::user()->rol, $roles)) {
+        if (!in_array(strtolower(auth::user()->rol), array_map('strtolower', $roles))) {
             abort(403, 'No tienes permisos para acceder a esta página.');
         }
+        
 
         return $next($request);
     }

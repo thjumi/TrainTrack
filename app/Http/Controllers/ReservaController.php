@@ -1,34 +1,36 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Contracts\ReservaServiceInterface;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Reservas;
 use Illuminate\Http\Request;
 
 class ReservaController extends Controller
 {
+    protected $reservaService;
+
+    public function __construct(ReservaServiceInterface $reservaService)
+    {
+        $this->reservaService = $reservaService;
+    }
+
     public function index()
     {
         $user = Auth::user();
+        $reservas = $this->reservaService->getAllReservas($user);
 
-        if ($user->rol === 'administrador') {
-            $reservas = Reservas::all();
-        } elseif ($user->rol === 'user') {
-            $reservas = Reservas::where('user_id', $user->id)->get();
-        } elseif ($user->rol === 'entrenador') {
-            $reservas = Reservas::where('entrenador_id', $user->id)->get();
-        }
         return view('reservas.index', compact('reservas'));
-
     }
 
     public function store(Request $request)
     {
+        $user = Auth::user();
 
-        $user = Auth::user(); //Asegurar que solo el usuario pueda hacer reservas
-        if ($user->rol === 'user') {
-            return redirect()->route('reservas.index')->with('error', 'No tienes permiso para crear una reserva.');
+        if ($user->rol !== 'user') {
+            abort(403, 'No tienes permiso para crear una reserva.');
         }
+
         $request->validate([
             'clase_id' => 'required|exists:clases,id',
             'entrenador_id' => 'required|exists:entrenadores,id',
@@ -36,35 +38,22 @@ class ReservaController extends Controller
             'confirmado' => 'required|boolean',
         ]);
 
-        Reservas::create($request->all()); // Crea una nueva clase
-        return redirect()->route('reservas.index')->with('success', 'Reserva creada exitosamente');
+        $this->reservaService->createReserva($request->all());
+
+        return redirect()->route('reservas.index')->with('success', 'Reserva creada exitosamente.');
     }
 
     public function show($id)
     {
         $user = Auth::user();
-        $reserva = Reservas::findOrFail($id);
-        //verificar que solo pueda ver sus reservas
-        if ($user->rol === 'user' && $reserva->user_id !== $user->id) {
-            abort(403, 'No tienes permiso para ver esta reserva.');
-        }
+        $reserva = $this->reservaService->getReservaById($id, $user);
 
-        if ($user->rol === 'entrenador' && $reserva->entrenador_id !== $user->id) {
-            abort(403, 'no tienes permiso para ver esta reserva');
-        }
-
-        $reservas = Reservas::findOrFail($id); // Busca la clase o lanza un error 404
-        return view('reservas.show', compact('reservas')); // Muestra los detalles
+        return view('reservas.show', compact('reserva'));
     }
 
     public function update(Request $request, $id)
     {
         $user = Auth::user();
-        $reservas = Reservas::findOrFail($id);
-
-        if ($user->rol==='administrador'&& $reservas->user_id !== $user->id){
-            abort(403, 'No tienes permiso para actualizar esta reserva.');
-        }
 
         $request->validate([
             'clase_id' => 'required|exists:clases,id',
@@ -73,20 +62,16 @@ class ReservaController extends Controller
             'confirmado' => 'required|boolean',
         ]);
 
-        $reservas->update($request->all());
-        return redirect()->route('reservas.index')->with('success', 'Reserva actualizada exitosamente');
+        $this->reservaService->updateReserva($id, $request->all(), $user);
+
+        return redirect()->route('reservas.index')->with('success', 'Reserva actualizada exitosamente.');
     }
 
     public function destroy($id)
     {
         $user = Auth::user();
-        $reserva = Reservas::findOrFail($id);
+        $this->reservaService->deleteReserva($id, $user);
 
-        if ($user->rol !== 'administrador' && $reserva->user_id !== $user->id) {
-            return response()->json(['error' => 'No tienes permiso para eliminar esta reserva'], 403);
-        }
-
-        $reserva->delete();
-        return redirect()->route('reservas.index')->with('success', 'Reserva eliminada exitosamente');
+        return redirect()->route('reservas.index')->with('success', 'Reserva eliminada exitosamente.');
     }
 }

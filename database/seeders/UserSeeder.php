@@ -2,34 +2,33 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use App\Models\User;
 
-use Illuminate\Database\Seeder;
-
-class DatabaseSeeder extends Seeder
+class UserSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function run()
     {
-        User::factory()->create([
+        User::create([
             'name' => 'Administrador',
             'email' => 'admin@example.com',
+            'password' => bcrypt('admin12345'),
             'rol' => 'administrador',
         ]);
 
-        User::factory()->create([
+        User::create([
             'name' => 'Entrenador',
             'email' => 'entrenador@example.com',
-            'rol' => 'usuario',
+            'password' => bcrypt('entrenador12345'),
+            'rol' => 'entrenador',
         ]);
-        
-        User::factory()->create([
+
+        User::create([
             'name' => 'Usuario',
             'email' => 'usuario@example.com',
+            'password' => bcrypt('user12345'),
             'rol' => 'usuario',
         ]);
-        
     }
 }
+

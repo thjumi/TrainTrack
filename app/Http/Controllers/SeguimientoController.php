@@ -3,22 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use App\Models\Seguimiento;
 use Illuminate\Http\Request;
+use App\Contracts\SeguimientoServiceInterface;
 
 class SeguimientoController extends Controller
 {
+    protected $seguimientoService;
+
+    public function __construct(SeguimientoServiceInterface $seguimientoService)
+    {
+        $this->seguimientoService = $seguimientoService;
+    }
+
     public function index()
     {
         $user = Auth::user();
-
-        // El administrador y el entrenador pueden ver todos los seguimientos
-        if (in_array($user->rol, ['administrador', 'entrenador'])) {
-            $seguimientos = Seguimiento::all();
-        } else {
-            // El usuario solo puede ver sus propios seguimientos
-            $seguimientos = Seguimiento::where('usuario_id', $user->id)->get();
-        }
+        $seguimientos = $this->seguimientoService->getAllSeguimientos($user);
 
         return view('seguimientos.index', compact('seguimientos'));
     }
@@ -26,12 +26,7 @@ class SeguimientoController extends Controller
     public function show($id)
     {
         $user = Auth::user();
-        $seguimiento = Seguimiento::findOrFail($id);
-
-        // Administrador y entrenador pueden ver cualquier seguimiento, el usuario solo el suyo
-        if ($seguimiento->usuario_id !== $user->id && !in_array($user->rol, ['administrador', 'entrenador'])) {
-            abort(403, 'No tienes permiso para ver este seguimiento.');
-        }
+        $seguimiento = $this->seguimientoService->getSeguimientoById($id, $user);
 
         return view('seguimientos.show', compact('seguimiento'));
     }
@@ -40,7 +35,6 @@ class SeguimientoController extends Controller
     {
         $user = Auth::user();
 
-        // Solo los usuarios pueden crear seguimientos
         if ($user->rol !== 'usuario') {
             abort(403, 'No tienes permiso para crear seguimientos.');
         }
@@ -51,12 +45,6 @@ class SeguimientoController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-
-        // Solo los usuarios pueden almacenar seguimientos
-        if ($user->rol !== 'usuario') {
-            abort(403, 'No tienes permiso para crear seguimientos.');
-        }
-
         $request->validate([
             'fecha' => 'required|date',
             'altura' => 'required|numeric',
@@ -65,15 +53,7 @@ class SeguimientoController extends Controller
             'notas' => 'nullable|string|max:500',
         ]);
 
-        // Crear el seguimiento asociado al usuario autenticado
-        Seguimiento::create([
-            'usuario_id' => $user->id,
-            'fecha' => $request->fecha,
-            'altura' => $request->altura,
-            'peso' => $request->peso,
-            'progreso' => $request->progreso,
-            'notas' => $request->notas,
-        ]);
+        $this->seguimientoService->createSeguimiento($request->all(), $user);
 
         return redirect()->route('seguimientos.index')->with('success', 'Seguimiento creado exitosamente.');
     }
@@ -81,12 +61,7 @@ class SeguimientoController extends Controller
     public function edit($id)
     {
         $user = Auth::user();
-        $seguimiento = Seguimiento::findOrFail($id);
-
-        // Solo el usuario puede editar su propio seguimiento
-        if ($seguimiento->usuario_id !== $user->id) {
-            abort(403, 'No tienes permiso para editar este seguimiento.');
-        }
+        $seguimiento = $this->seguimientoService->getSeguimientoById($id, $user);
 
         return view('seguimientos.edit', compact('seguimiento'));
     }
@@ -94,23 +69,15 @@ class SeguimientoController extends Controller
     public function update(Request $request, $id)
     {
         $user = Auth::user();
-        $seguimiento = Seguimiento::findOrFail($id);
-
-        // Solo el usuario puede actualizar su propio seguimiento
-        if ($seguimiento->usuario_id !== $user->id) {
-            abort(403, 'No tienes permiso para actualizar este seguimiento.');
-        }
-
         $request->validate([
             'fecha' => 'required|date',
             'altura' => 'required|numeric',
             'peso' => 'required|numeric',
             'progreso' => 'required|string|max:255',
             'notas' => 'nullable|string|max:500',
-           
         ]);
 
-        $seguimiento->update($request->all());
+        $this->seguimientoService->updateSeguimiento($id, $request->all(), $user);
 
         return redirect()->route('seguimientos.index')->with('success', 'Seguimiento actualizado exitosamente.');
     }
@@ -118,15 +85,9 @@ class SeguimientoController extends Controller
     public function destroy($id)
     {
         $user = Auth::user();
-        $seguimiento = Seguimiento::findOrFail($id);
-
-        // Solo el usuario puede eliminar su propio seguimiento
-        if ($seguimiento->usuario_id !== $user->id) {
-            abort(403, 'No tienes permiso para eliminar este seguimiento.');
-        }
-
-        $seguimiento->delete();
+        $this->seguimientoService->deleteSeguimiento($id, $user);
 
         return redirect()->route('seguimientos.index')->with('success', 'Seguimiento eliminado exitosamente.');
     }
 }
+

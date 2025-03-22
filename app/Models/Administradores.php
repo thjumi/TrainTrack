@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Administradores extends Model
 {
-    protected $table= 'administradors';
+    protected $table= 'administradores';
 
     protected $filleable =['nombre','email','telefono','especialidad'];
 
