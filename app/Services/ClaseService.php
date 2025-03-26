@@ -8,14 +8,18 @@ use App\Models\Clase;
 class ClaseService implements ClaseServiceInterface
 {
     public function getAllClases($user)
-    {
-        if ($user->rol === 'administrador') {
+{
+    switch ($user->rol) {
+        case 'administrador':
             return Clase::all();
-        } elseif ($user->rol === 'entrenador') {
+        case 'entrenador':
             return Clase::where('entrenador_id', $user->id)->get();
-        }
-        return Clase::all();
+        case 'usuario':
+            return Clase::where('user_id', $user->id)->get();
+        default:
+            return Clase::all();
     }
+}
 
     public function getClaseById($id)
     {
