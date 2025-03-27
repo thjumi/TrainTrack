@@ -48,15 +48,13 @@ php artisan migrate --seed
 
 ### 📅 Reserva de clases
 - Sistema de reservas de clases con entrenadores
-- Cancelación y reprogramación de clases
 
 ### 📊 Seguimiento del progreso
 - Registro de avances en los entrenamientos
-- Visualización de métricas y estadísticas
 
 ### 👤 Gestión de usuarios
 - Registro e inicio de sesión seguro
-- Recuperación de contraseña vía email
+
 
 ## Requisitos previos
 Asegúrate de tener instalado:
