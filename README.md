@@ -5,8 +5,9 @@ TrainTrack es una aplicación web diseñada para ayudar a los usuarios a gestion
 
 ## Tecnologías utilizadas
 - **PHP**: 8.2.12
-- **Laravel**: 10.x
+- **Laravel**: : 5.13.0
 - **MySQL**: Base de datos
+- **Xampp**:  8.2.12
 
 ## Instalación y configuración
 ### Clonar el repositorio
