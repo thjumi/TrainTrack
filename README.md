@@ -1,4 +1,4 @@
-# TrainTrack
+# 🏋️‍♂️ TrainTrack
 
 ## Descripción
 TrainTrack es una aplicación web diseñada para ayudar a los usuarios a gestionar sus rutinas de ejercicio y reservar clases en un gimnasio. Proporciona un sistema de seguimiento del progreso, planificación de entrenamientos y gestión de horarios para optimizar la experiencia deportiva de los usuarios.
