@@ -25,11 +25,11 @@ class ClaseController extends Controller
 
     public function store(Request $request) {
         $request->validate([
-            'nombre' => 'required|string|max:25',
-            'descripcion' => 'required|string|max:200',
+            'nombre' => 'required|string|min:15|max:40|',
+            'descripcion' => 'required|string|min:20|max:200',
             'horario' => 'required|date',
             'entrenador_id' => 'required|exists:entrenadores,id',
-            'cupoMax' => 'required|integer|min:1', // Validación como número entero positivo
+            'cupoMax' => 'required|integer|min:1',
         ]);
 
         Clase::create($request->all()); // Crea una nueva clase
@@ -43,11 +43,11 @@ class ClaseController extends Controller
 
     public function update(Request $request, $id) {
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string|max:255',
+            'nombre' => 'required|string|min:15|max:40|',
+            'descripcion' => 'required|string|min:20|max:200',
             'horario' => 'required|date',
             'entrenador_id' => 'required|exists:entrenadores,id',
-            'cupoMax' => 'required|integer|min:1', // Validación como número entero positivo
+            'cupoMax' => 'required|integer|min:1',
         ]);
 
         $clase = Clase::findOrFail($id); // Busca la clase

@@ -9,6 +9,7 @@ use App\Contracts\ProfileServiceInterface;
 use App\Contracts\ReservaServiceInterface;
 use App\Contracts\RutinaServiceInterface;
 use App\Contracts\SeguimientoServiceInterface;
+use App\Contracts\UserServiceInterface;
 
 //Services
 
@@ -18,7 +19,9 @@ use App\Services\ProfileService;
 use App\Services\ReservaService;
 use App\Services\RutinaService;
 use App\Services\SeguimientoService;
+use App\Services\UserService;
 use Illuminate\Support\ServiceProvider;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProfileServiceInterface::class, ProfileService::class);
         $this->app->bind(ReservaServiceInterface::class, ReservaService::class);
         $this->app->bind(RutinaServiceInterface::class, RutinaService::class);
+        $this->app->bind(UserserviceInterface::class, UserService::class);
         $this->app->bind(SeguimientoServiceInterface::class, SeguimientoService::class);
     }
     

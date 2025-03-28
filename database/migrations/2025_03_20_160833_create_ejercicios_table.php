@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('descripcion');
             $table->text('grupoMuscular');
             $table->integer('dificultad');
+            $table->foreignId('entrenador_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });
     }

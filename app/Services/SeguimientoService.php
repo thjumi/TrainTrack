@@ -13,7 +13,7 @@ class SeguimientoService implements SeguimientoServiceInterface
         if (in_array($user->rol, ['administrador', 'entrenador'])) {
             return Seguimiento::all();
         }
-        return Seguimiento::where('usuario_id', $user->id)->get();
+        return Seguimiento::where('user_id', $user->id)->get();
     }
 
     public function getSeguimientoById($id, $user)

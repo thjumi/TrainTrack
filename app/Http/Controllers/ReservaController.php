@@ -34,7 +34,7 @@ class ReservaController extends Controller
         $request->validate([
             'clase_id' => 'required|exists:clases,id',
             'entrenador_id' => 'required|exists:entrenadores,id',
-            'fechaReserva' => 'required|date',
+            'fechaReserva' => 'required|date|',
             'confirmado' => 'required|boolean',
         ]);
 

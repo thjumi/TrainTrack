@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Ejercicio extends Model
 {
     protected $table='ejercicios';
-    protected $fillable = ['nombre', 'descripcion','grupoMuscular', 'dificultad'];
+    protected $fillable = ['nombre', 'descripcion','grupoMuscular', 'dificultad', 'entrenador_id'];
 
-    public function EjerciciosRutinas(){
-        return $this->hasMany(EjerciciosRutinas::class);
+    public function ejerciciosRutinas(){
+        return $this->hasMany(EjercicioRutina::class);
     }
 }

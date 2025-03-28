@@ -10,6 +10,6 @@ class Seguimiento extends Model
     protected $fillable = ['user_id', 'fecha', 'progreso', 'peso','altura', 'notas'];
 
     public function usuario(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

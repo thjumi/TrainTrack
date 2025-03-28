@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -24,11 +23,28 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->authenticate(); // Autentica al usuario con las credenciales proporcionadas
+        $request->session()->regenerate(); // Regenera el token de sesión por seguridad
 
-        $request->session()->regenerate();
+        // Redirige según el rol del usuario
+        return $this->authenticated($request, Auth::user());
+    }
 
-        return redirect()->intended(route('dashboard', absolute: false));
+    /**
+     * Redirige al dashboard correspondiente según el rol del usuario autenticado.
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        switch ($user->rol) {
+            case 'admin':
+                return redirect()->route('admin.dashboard');
+            case 'entrenador':
+                return redirect()->route('entrenador.dashboard');
+            case 'user':
+                return redirect()->route('user.dashboard');
+            default:
+                abort(403, 'Acceso no autorizado');
+        }
     }
 
     /**

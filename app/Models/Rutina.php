@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Rutina extends Model
 {
     protected $table='rutinas';
-    protected $fillable = ['usuario_id', 'nombre','fechaCreacion', 'descripcion'];
+    protected $fillable = ['user_id', 'nombre','fechaCreacion', 'descripcion'];
 
     public function EjerciciosRutinas(){
-        return $this->hasMany(EjerciciosRutinas::class);
+        return $this->hasMany(EjercicioRutina::class);
     }
     public function usuario(){
         return $this->belongsTo(User::class);

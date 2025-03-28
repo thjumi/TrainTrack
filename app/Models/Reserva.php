@@ -10,11 +10,11 @@ class Reserva extends Model
 
     protected $fillable = ['clase_id', 'usuario_id', 'fechaReserva', 'confirmado'];
 
-    public function clases(){
+    public function clase(){
         return $this->belongsTo(Clase::class);
     }
     public function usuario(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 }

@@ -7,15 +7,14 @@ use App\Models\Reserva;
 class ReservaService implements ReservaServiceInterface
 {
     public function getAllReservas($user)
-    {
-        if ($user->rol === 'administrador') {
-            return Reserva::all();
-        } elseif ($user->rol === 'user') {
-            return Reserva::where('user_id', $user->id)->get();
-        } elseif ($user->rol === 'entrenador') {
-            return Reserva::where('entrenador_id', $user->id)->get();
-        }
+{
+    if ($user->rol === 'administrador') {
+        return Reserva::all();
+    } elseif ($user->rol === 'usuario') {
+        return Reserva::where('user_id', $user->id)->get();
     }
+}
+
 
     public function createReserva(array $data)
     {
@@ -25,11 +24,10 @@ class ReservaService implements ReservaServiceInterface
     public function getReservaById($id, $user)
     {
         $reserva = Reserva::findOrFail($id);
-
-        if (($user->rol === 'user' && $reserva->user_id !== $user->id) ||
-            ($user->rol === 'entrenador' && $reserva->entrenador_id !== $user->id)) {
+        if ($user->rol === 'usuario' && $reserva->user_id !== $user->id) {
             abort(403, 'No tienes permiso para ver esta reserva.');
         }
+        
 
         return $reserva;
     }

@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('rutinas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained('users');
             $table->string('nombre');
             $table->text('descripcion');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->date('fechaCreacion');
             $table->timestamps();
         });
     }

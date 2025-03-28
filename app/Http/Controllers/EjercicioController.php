@@ -39,7 +39,7 @@ class EjercicioController extends Controller
             'nombre' => 'required|string|max:25',
             'descripcion' => 'required|string|max:200',
             'grupoMuscular' => 'required|string|max:100',
-            'dificultad' => 'required|string|max:50',
+            'dificultad' => 'required|integer',
         ]);
 
         $this->ejercicioService->createEjercicio($request->all());
@@ -69,10 +69,10 @@ class EjercicioController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nombre' => 'required|string|max:25',
-            'descripcion' => 'required|string|max:200',
-            'grupoMuscular' => 'required|string|max:100',
-            'dificultad' => 'required|string|max:50',
+            'nombre' => 'required|string|min:20|max:40',
+            'descripcion' => 'required|string|min:20|max:200',
+            'grupoMuscular' => 'required|string|max:40',
+            'dificultad' => 'required|integer',
         ]);
 
         $user = Auth::user();

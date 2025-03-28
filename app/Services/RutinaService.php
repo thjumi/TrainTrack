@@ -8,12 +8,12 @@ class RutinaService implements RutinaServiceInterface
 {
     public function getAllRutinas($user)
     {
-        return Rutina::where('usuario_id', $user->id)->get();
+        return Rutina::where('user_id', $user->id)->get();
     }
 
     public function createRutina(array $data, $user)
     {
-        return Rutina::create(array_merge($data, ['usuario_id' => $user->id]));
+        return Rutina::create(array_merge($data, ['user_id' => $user->id]));
     }
 
     public function getRutinaById($id, $user)

@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('seguimientos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('rutina_id')->constrained('rutinas')->onDelete('cascade');
             $table->float('peso');
             $table->float('altura');
             $table->timestamp('fecha');
-            $table->text('observacion')->nullable();
+            $table->float('progreso');
+            $table->text('notas')->nullable();
             $table->timestamps();
         });
     }

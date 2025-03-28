@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->text('descripcion');
-            $table->timestamp('horario');
-            $table->foreignId('entrenador_id')->constrained('entrenadores');
+            $table->dateTime('horario');
+            $table->foreignId('entrenador_id')->constrained('users')->onDelete('cascade');
             $table->integer('cupoMax');
             $table->timestamps();
         });

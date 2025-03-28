@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
     protected $table = 'users';
 
-    protected $fillable = ['name', 'email', 'password', 'fechaRegistro', 'rol'];
+    protected $fillable = ['name', 'email', 'password', 'fecha_registro', 'rol'];
 
     protected $hidden = ['password', 'remember_token'];
 
@@ -21,10 +22,17 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+
+
+    public function hasRol()
+    {
+        return $this->rol === 'rol';
+    }
+
     // Relación con reservas
     public function reservas()
     {
-        return $this->hasMany(Reservas::class);
+        return $this->hasMany(Reserva::class);
     }
 
     // Relación con seguimientos
@@ -39,9 +47,9 @@ class User extends Authenticatable
         return $this->hasMany(Rutina::class);
     }
 
-    // Relación con clases (si el usuario es entrenador)
+    // Relación con clases (entrenador)
     public function clases()
     {
-        return $this->hasMany(Clases::class, 'entrenador_id');
+        return $this->hasMany(Clase::class, 'entrenador_id');
     }
 }

@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EjerciciosRutinas extends Model
+class EjercicioRutina extends Model
 {
     protected $table='ejercicios_rutinas';
-    protected $fillable = ['ejercicio_id','rutina_id','repeticiones', 'series','descanso'];
+    protected $fillable = ['ejercicio_id','rutina_id','repeticiones', 'series','descansos'];
 
-    public function ejercicios(){
+    public function ejercicio(){
         return $this->belongsTo(Ejercicio::class);
     }
-    public function rutinas(){
+    public function rutina(){
         return $this->belongsTo(Rutina::class);
     }
 }

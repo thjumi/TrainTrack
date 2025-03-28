@@ -27,7 +27,7 @@ class RutinaController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'nombre' => 'required|string|max:40',
+            'nombre' => 'required|string|min:10|max:40',
             'fechaCreacion' => 'required|date',
             'descripcion' => 'required|string|max:200',
         ]);
@@ -50,7 +50,7 @@ class RutinaController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'nombre' => 'required|string|max:40',
+            'nombre' => 'required|string|min:10|max:40',
             'fechaCreacion' => 'required|date',
             'descripcion' => 'required|string|max:200',
         ]);

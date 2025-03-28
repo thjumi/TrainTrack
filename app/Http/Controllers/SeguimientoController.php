@@ -49,7 +49,7 @@ class SeguimientoController extends Controller
             'fecha' => 'required|date',
             'altura' => 'required|numeric',
             'peso' => 'required|numeric',
-            'progreso' => 'required|string|max:255',
+            'progreso' => 'required|numeric',
             'notas' => 'nullable|string|max:500',
         ]);
 

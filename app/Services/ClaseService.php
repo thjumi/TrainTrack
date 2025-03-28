@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\ClaseServiceInterface;
+use App\Models\User;
 use App\Models\Clase;
 
 class ClaseService implements ClaseServiceInterface
@@ -15,11 +16,12 @@ class ClaseService implements ClaseServiceInterface
         case 'entrenador':
             return Clase::where('entrenador_id', $user->id)->get();
         case 'usuario':
-            return Clase::where('user_id', $user->id)->get();
+            return Clase::all();
         default:
             return Clase::all();
     }
 }
+
 
     public function getClaseById($id)
     {
@@ -28,8 +30,12 @@ class ClaseService implements ClaseServiceInterface
 
     public function createClase(array $data)
     {
+        if (!User::where('id', $data['entrenador_id'])->where('rol', 'entrenador')->exists()) {
+            throw new \InvalidArgumentException("El entrenador seleccionado no es válido.");
+        }
         return Clase::create($data);
     }
+    
 
     public function updateClase($id, array $data)
     {
@@ -44,4 +50,5 @@ class ClaseService implements ClaseServiceInterface
         $clase->delete();
     }
 }
+
 
